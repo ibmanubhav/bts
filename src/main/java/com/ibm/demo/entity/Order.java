@@ -1,6 +1,9 @@
 package com.ibm.demo.entity;
 
+import javax.validation.constraints.NotNull;
+
 public class Order {
+	@NotNull
 	private String item;
 	private float price;
 

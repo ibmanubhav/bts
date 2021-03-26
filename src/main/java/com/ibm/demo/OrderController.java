@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
@@ -39,12 +42,16 @@ public class OrderController {
 	List<Order> getOrders() {
 		return orderService.getOrders();
 	}
+	/**
+	 * method to search for an order
+	 * @param orderId
+	 * @return zero or matching order
+	 */
 
 	@GetMapping("/order/{id}")
-	Order getOrder(@PathVariable("id") int orderId) {
+	Optional<Order> getOrder(@PathVariable("id") String orderId) {
 		return orderService.getOrder(orderId);
 	}
-
 
 	private void validateModel(Errors bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -53,10 +60,11 @@ public class OrderController {
 	}
 
 	@PutMapping("/order/{id}")
-	void updateOrder(@RequestBody Order order, @PathVariable("id") int orderId, BindingResult bindingResult) {
+	void updateOrder(@RequestBody @Valid Order order, @PathVariable("id") String orderId, BindingResult bindingResult) {
 		validateModel(bindingResult);
 		System.out.println(orderId);
-		orderService.updateOrder(orderId);
+		order.setId(orderId);
+		orderService.updateOrder(order);
 	}
 
 	@DeleteMapping("/order/{id}")
